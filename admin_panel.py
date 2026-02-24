@@ -466,30 +466,30 @@ class ProductDialog(QDialog):
         
         try:
             # Save or update product
-                if self.product_id is None:
-                    # Add new product
-                    product_id = self.db.add_product(
-                        name=name,
-                        price=price,
-                        description=description,
-                        image_path=self.image_path,
-                        stock=stock
-                    )
+            if self.product_id is None:
+                # Add new product
+                product_id = self.db.add_product(
+                    name=name,
+                    price=price,
+                    description=description,
+                    image_path=self.image_path,
+                    stock=stock
+                )
                 if product_id:
                     QMessageBox.information(self, "Success", f"Product '{name}' added successfully!")
                     self.accept()
                 else:
                     QMessageBox.warning(self, "Error", "Failed to add product! Product ID is None.")
-                else:
-                    # Update existing product
-                    success = self.db.update_product(
-                        product_id=self.product_id,
-                        name=name,
-                        price=price,
-                        description=description,
-                        image_path=self.image_path,
-                        stock=stock
-                    )
+            else:
+                # Update existing product
+                success = self.db.update_product(
+                    product_id=self.product_id,
+                    name=name,
+                    price=price,
+                    description=description,
+                    image_path=self.image_path,
+                    stock=stock
+                )
                 if success:
                     QMessageBox.information(self, "Success", f"Product '{name}' updated successfully!")
                     self.accept()
@@ -501,7 +501,6 @@ class ProductDialog(QDialog):
             import traceback
             traceback.print_exc()
             QMessageBox.critical(self, "Error", f"Error saving product: {str(e)}")
-
 
 
 class AdminPanel(QMainWindow):
