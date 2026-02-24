@@ -155,7 +155,7 @@ class ProductWidget(QWidget):
 
         self.image_path = product_data[4] if len(product_data) > 4 and product_data[4] else ""  # image_path (index 4)
 
-        # Convert stock to int (index 5)
+        # Convert stock to int (index 5) - FIXED: stock is at index 5
         try:
             self.stock = int(product_data[5]) if len(product_data) > 5 and product_data[5] else 0  # stock_quantity
         except (ValueError, TypeError):
@@ -1263,10 +1263,11 @@ class CartWidget(QWidget):
             # Get current stock from database
             product = self.db.get_product(item['id'])
             if product:
-                current_stock = product[6]  # stock_quantity at index 6
+                # FIXED: Stock is at index 5, not index 6
                 try:
+                    current_stock = int(product[5])  # stock_quantity at index 5
                     requested_quantity = item.get('quantity', 1)
-                    if int(current_stock) < requested_quantity:
+                    if current_stock < requested_quantity:
                         QMessageBox.warning(
                             self,
                             "Stock Issue",
@@ -1275,7 +1276,8 @@ class CartWidget(QWidget):
                             f"Please adjust the quantity."
                         )
                         return
-                except (ValueError, TypeError):
+                except (ValueError, TypeError, IndexError) as e:
+                    print(f"Error checking stock: {e}")
                     QMessageBox.warning(
                         self,
                         "Stock Issue",
@@ -1341,12 +1343,13 @@ class CartWidget(QWidget):
                 product = self.db.get_product(item['id'])
                 if product:
                     try:
-                        current_stock = int(product[6])  # stock_quantity at index 6
+                        # FIXED: Stock is at index 5, not index 6
+                        current_stock = int(product[5])  # stock_quantity at index 5
                         quantity_purchased = item.get('quantity', 1)
                         new_stock = current_stock - quantity_purchased
                         self.db.update_product(item['id'], stock=new_stock)
-                    except (ValueError, TypeError, IndexError):
-                        print(f"Error updating stock for product {item['id']}")
+                    except (ValueError, TypeError, IndexError) as e:
+                        print(f"Error updating stock for product {item['id']}: {e}")
             
             # Show success message based on payment type
             total_quantity = sum(item.get('quantity', 1) for item in self.cart_items)
@@ -1554,7 +1557,8 @@ class CartWidget(QWidget):
             product = self.db.get_product(item['id'])
             if product:
                 try:
-                    current_stock = int(product[6])  # stock_quantity at index 6
+                    # FIXED: Stock is at index 5, not index 6
+                    current_stock = int(product[5])  # stock_quantity at index 5
                     requested_quantity = item.get('quantity', 1)
                     if current_stock < requested_quantity:
                         QMessageBox.warning(
@@ -1565,7 +1569,8 @@ class CartWidget(QWidget):
                             f"Please adjust the quantity."
                         )
                         return
-                except (ValueError, TypeError, IndexError):
+                except (ValueError, TypeError, IndexError) as e:
+                    print(f"Error checking stock: {e}")
                     QMessageBox.warning(
                         self,
                         "Stock Issue",
@@ -1621,12 +1626,13 @@ class CartWidget(QWidget):
                 product = self.db.get_product(item['id'])
                 if product:
                     try:
-                        current_stock = int(product[6])  # stock_quantity at index 6
+                        # FIXED: Stock is at index 5, not index 6
+                        current_stock = int(product[5])  # stock_quantity at index 5
                         quantity_purchased = item.get('quantity', 1)
                         new_stock = current_stock - quantity_purchased
                         self.db.update_product(item['id'], stock=new_stock)
-                    except (ValueError, TypeError, IndexError):
-                        print(f"Error updating stock for product {item['id']}")
+                    except (ValueError, TypeError, IndexError) as e:
+                        print(f"Error updating stock for product {item['id']}: {e}")
             
             total_quantity = sum(item.get('quantity', 1) for item in self.cart_items)
             

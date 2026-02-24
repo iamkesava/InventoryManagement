@@ -240,8 +240,6 @@ class ProductDialog(QDialog):
         """)
         form_layout.addRow("Stock Quantity:", self.stock_input)
         
-        # (category removed)
-        
         # Image upload section
         image_group = QGroupBox("Product Image")
         image_group.setStyleSheet("""
@@ -467,13 +465,13 @@ class ProductDialog(QDialog):
         try:
             # Save or update product
             if self.product_id is None:
-                # Add new product
+                # Add new product - FIXED: Now passing exactly 5 arguments
                 product_id = self.db.add_product(
-                    name=name,
-                    price=price,
-                    description=description,
-                    image_path=self.image_path,
-                    stock=stock
+                    name,           # 1st argument
+                    price,          # 2nd argument
+                    description,    # 3rd argument
+                    self.image_path, # 4th argument
+                    stock           # 5th argument
                 )
                 if product_id:
                     QMessageBox.information(self, "Success", f"Product '{name}' added successfully!")
@@ -565,7 +563,7 @@ class AdminPanel(QMainWindow):
         header_layout = QHBoxLayout(header)
         header_layout.setContentsMargins(20, 15, 20, 15)
         
-        title = QLabel("🛠️Admin Panel")
+        title = QLabel("🛠️ Admin Panel")
         title.setFont(QFont("Segoe UI", 18, QFont.Bold))
         title.setStyleSheet("color: white;")
         
